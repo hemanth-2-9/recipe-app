@@ -1,0 +1,15 @@
+/* Custom Swiper Styles */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #FFA829 !important; /* Your theme's orange color */
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #FFA829 !important; /* Your theme's orange color */
+}
+
+/* Adjust slide content padding to not overlap with navigation */
+.swiper-slide .prose {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
