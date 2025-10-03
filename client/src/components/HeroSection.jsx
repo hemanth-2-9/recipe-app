@@ -4,19 +4,21 @@ import axios from "axios";
 import ReactMarkdown from "react-markdown";
 
 // Imports for Swiper Carousel
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
 
 // Swiper's CSS files for styling
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import apiClient from "../api";
 
 const trendingRecipesData = [
   {
     title: "Pasta Primavera",
     img: "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600",
-    description: "A fresh and vibrant pasta dish loaded with spring vegetables, perfect for a light and healthy meal.",
+    description:
+      "A fresh and vibrant pasta dish loaded with spring vegetables, perfect for a light and healthy meal.",
     ingredients: [
       "250g pasta (like fusilli or penne)",
       "1 tbsp olive oil",
@@ -26,7 +28,7 @@ const trendingRecipesData = [
       "1/2 cup cherry tomatoes, halved",
       "1/4 cup Parmesan cheese, grated",
       "Salt and pepper to taste",
-      "Fresh basil for garnish"
+      "Fresh basil for garnish",
     ],
     instructions: [
       "Cook pasta according to package directions. Drain and set aside.",
@@ -34,50 +36,52 @@ const trendingRecipesData = [
       "Add broccoli and carrots. Sauté for 5-7 minutes until tender-crisp.",
       "Stir in the cherry tomatoes and cooked pasta.",
       "Season with salt and pepper, then toss with Parmesan cheese.",
-      "Garnish with fresh basil before serving."
+      "Garnish with fresh basil before serving.",
     ],
   },
   {
     title: "Avocado Salad",
     img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
-    description: "A refreshing and creamy salad featuring ripe avocados, cherry tomatoes, and a zesty lime dressing.",
+    description:
+      "A refreshing and creamy salad featuring ripe avocados, cherry tomatoes, and a zesty lime dressing.",
     ingredients: [
-        "2 ripe avocados, cubed",
-        "1 cup cherry tomatoes, halved",
-        "1/4 red onion, thinly sliced",
-        "1/4 cup fresh cilantro, chopped",
-        "Juice of 1 lime",
-        "2 tbsp olive oil",
-        "Salt and black pepper to taste"
+      "2 ripe avocados, cubed",
+      "1 cup cherry tomatoes, halved",
+      "1/4 red onion, thinly sliced",
+      "1/4 cup fresh cilantro, chopped",
+      "Juice of 1 lime",
+      "2 tbsp olive oil",
+      "Salt and black pepper to taste",
     ],
     instructions: [
-        "In a medium bowl, gently combine the cubed avocados, cherry tomatoes, red onion, and cilantro.",
-        "In a small bowl, whisk together the lime juice, olive oil, salt, and pepper.",
-        "Pour the dressing over the avocado mixture and toss gently to combine.",
-        "Serve immediately to prevent the avocado from browning."
+      "In a medium bowl, gently combine the cubed avocados, cherry tomatoes, red onion, and cilantro.",
+      "In a small bowl, whisk together the lime juice, olive oil, salt, and pepper.",
+      "Pour the dressing over the avocado mixture and toss gently to combine.",
+      "Serve immediately to prevent the avocado from browning.",
     ],
   },
   {
     title: "Chocolate Cake",
     img: "https://imgs.search.brave.com/ny9vE0YeDVKGlqdbAMDFIhbhQ5EsUf-A2_ii1-EX0qg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAxLzA2LzYxLzY5/LzM2MF9GXzEwNjYx/Njk0Ml83c2lLM0RZ/OEVDblZmMERpTk1P/OFYxaGlwOEFnclhM/cC5qcGc",
-    description: "A decadent and moist chocolate cake with a rich, fudgy texture that is sure to satisfy any chocolate lover.",
+    description:
+      "A decadent and moist chocolate cake with a rich, fudgy texture that is sure to satisfy any chocolate lover.",
     ingredients: [
-        "1 1/2 cups all-purpose flour",
-        "1 cup granulated sugar",
-        "1/3 cup unsweetened cocoa powder",
-        "1 tsp baking soda",
-        "1/2 tsp salt",
-        "1 cup water",
-        "1/2 cup vegetable oil",
-        "1 tsp vanilla extract"
+      "1 1/2 cups all-purpose flour",
+      "1 cup granulated sugar",
+      "1/3 cup unsweetened cocoa powder",
+      "1 tsp baking soda",
+      "1/2 tsp salt",
+      "1 cup water",
+      "1/2 cup vegetable oil",
+      "1 tsp vanilla extract",
     ],
     instructions: [
-        "Preheat oven to 350°F (175°C). Grease and flour an 8-inch round cake pan.",
-        "In a large bowl, whisk together flour, sugar, cocoa powder, baking soda, and salt.",
-        "In a separate bowl, combine water, vegetable oil, and vanilla extract.",
-        "Pour the wet ingredients into the dry ingredients and mix until just combined. Do not overmix.",
-        "Pour the batter into the prepared pan and bake for 30-35 minutes, or until a toothpick inserted into the center comes out clean.",
-        "Let cool in the pan for 10 minutes before transferring to a wire rack to cool completely."
+      "Preheat oven to 350°F (175°C). Grease and flour an 8-inch round cake pan.",
+      "In a large bowl, whisk together flour, sugar, cocoa powder, baking soda, and salt.",
+      "In a separate bowl, combine water, vegetable oil, and vanilla extract.",
+      "Pour the wet ingredients into the dry ingredients and mix until just combined. Do not overmix.",
+      "Pour the batter into the prepared pan and bake for 30-35 minutes, or until a toothpick inserted into the center comes out clean.",
+      "Let cool in the pan for 10 minutes before transferring to a wire rack to cool completely.",
     ],
   },
 ];
@@ -92,27 +96,25 @@ function HeroSection() {
 
   useEffect(() => {
     if (selectedRecipe) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     }
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     };
   }, [selectedRecipe]);
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/logout", {}, {
-        withCredentials: true
-      });
+      await apiClient.post("/api/auth/logout", {});
       navigate("/login");
     } catch (e) {
       console.error("Logout failed", e);
       alert("Could not log out. Please try again.");
     }
   };
-  
+
   const handleGenerateRecipe = async () => {
     if (!ingredients.trim()) {
       setError("Please enter ingredients");
@@ -123,16 +125,17 @@ function HeroSection() {
     setRecipePages([]);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/ai/recipe", {
+      const res = await apiClient.post("api/ai/recipe", {
         prompt: ingredients,
-      }, { withCredentials: true });
+      });
 
       const fullRecipe = res.data.recipe;
       if (fullRecipe) {
-        const pages = fullRecipe.split('### ').filter(page => page.trim() !== '');
-        setRecipePages(pages.map(p => '### ' + p));
+        const pages = fullRecipe
+          .split("### ")
+          .filter((page) => page.trim() !== "");
+        setRecipePages(pages.map((p) => "### " + p));
       }
-
     } catch (err) {
       setError("Failed to fetch recipe, please try again.");
     } finally {
@@ -150,7 +153,7 @@ function HeroSection() {
         }}
       ></div>
       <div className="absolute inset-0 bg-black/60"></div>
-      
+
       <div className="relative z-10 flex flex-col min-h-screen">
         <header className="flex justify-between items-center px-8 py-6">
           <div className="flex items-center gap-2 h-12">
@@ -209,7 +212,7 @@ function HeroSection() {
           </button>
 
           {error && <p className="mt-4 text-red-400">{error}</p>}
-          
+
           {recipePages.length > 0 && (
             <div className="mt-8 bg-white/10 p-6 rounded-xl w-full max-w-2xl text-white backdrop-blur-md shadow-lg">
               <Swiper
@@ -222,9 +225,12 @@ function HeroSection() {
               >
                 {recipePages.map((page, index) => (
                   <SwiperSlide key={index}>
-                    <div 
+                    <div
                       className="prose prose-invert max-h-[400px] overflow-y-auto p-4 text-left mx-auto"
-                      style={{'--swiper-navigation-color': '#FFA829', '--swiper-pagination-color': '#FFA829'}}
+                      style={{
+                        "--swiper-navigation-color": "#FFA829",
+                        "--swiper-pagination-color": "#FFA829",
+                      }}
                     >
                       <ReactMarkdown>{page}</ReactMarkdown>
                     </div>
@@ -279,7 +285,7 @@ function HeroSection() {
           </footer>
         </main>
       </div>
-      
+
       {selectedRecipe && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-800 backdrop-blur-md p-6 rounded-xl max-w-2xl w-full text-white relative shadow-xl max-h-[90vh] overflow-y-auto">
@@ -294,18 +300,24 @@ function HeroSection() {
               alt={selectedRecipe.title}
               className="h-64 w-full object-cover rounded-lg mb-4"
             />
-            <h2 className="text-3xl font-bold mb-2 text-[#FFB347]">{selectedRecipe.title}</h2>
+            <h2 className="text-3xl font-bold mb-2 text-[#FFB347]">
+              {selectedRecipe.title}
+            </h2>
             <p className="text-gray-300 mb-6">{selectedRecipe.description}</p>
-            
+
             <div className="text-left">
-              <h3 className="text-2xl font-semibold mb-3 border-b-2 border-[#FFB347] pb-1">Ingredients</h3>
+              <h3 className="text-2xl font-semibold mb-3 border-b-2 border-[#FFB347] pb-1">
+                Ingredients
+              </h3>
               <ul className="list-disc list-inside mb-6 space-y-1 text-gray-300">
                 {selectedRecipe.ingredients.map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
-              
-              <h3 className="text-2xl font-semibold mb-3 border-b-2 border-[#FFB347] pb-1">Instructions</h3>
+
+              <h3 className="text-2xl font-semibold mb-3 border-b-2 border-[#FFB347] pb-1">
+                Instructions
+              </h3>
               <ol className="list-decimal list-inside space-y-2 text-gray-300">
                 {selectedRecipe.instructions.map((step, index) => (
                   <li key={index}>{step}</li>

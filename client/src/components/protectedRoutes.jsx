@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import PacmanLoader from "react-spinners/PacmanLoader";
+import apiClient from "../api";
 
 function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -9,8 +10,7 @@ function ProtectedRoute({ children }) {
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/auth/verify", {
-          withCredentials: true,
+        const res = await apiClient.get("/api/auth/verify", {
           headers: {
             "Cache-Control": "no-cache",
             Pragma: "no-cache",
@@ -31,16 +31,16 @@ function ProtectedRoute({ children }) {
 
   // yahan pehle loading state dikhegi.
   if (isAuthenticated === null) {
-    return(
-    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-      <div className="flex flex-col items-center gap-4">
-        <PacmanLoader color="#FFA829" size={42} />
-        <p className="text-white text-lg font-semibold animate-pulse">
-          Verifying session...
-        </p>
+    return (
+      <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+        <div className="flex flex-col items-center gap-4">
+          <PacmanLoader color="#FFA829" size={42} />
+          <p className="text-white text-lg font-semibold animate-pulse">
+            Verifying session...
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
   }
 
   // Agar user authenticated nahi hai, toh redirect karo.

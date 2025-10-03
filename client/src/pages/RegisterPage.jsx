@@ -2,6 +2,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import apiClient from "../api";
 
 function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -14,15 +15,15 @@ function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/register",
+      const res = await apiClient.post(
+        "/api/auth/register",
         {
           name: username,
           email,
           password,
           confirmPassword,
         },
-        { withCredentials: true }
+        
       );
       if (res.data.token) {
         Cookies.set("token", res.data.token); 
