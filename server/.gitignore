@@ -1,5 +1,14 @@
-node_modules
-# Keep environment variables out of version control
+# server/.gitignore
+
+# Dependencies
+node_modules/
+
+# Environment Variables - VERY IMPORTANT for security
 .env
 
-/generated/prisma
+# Logs
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
