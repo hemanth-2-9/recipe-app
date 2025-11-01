@@ -1,32 +1,32 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import User from '../model/authModel.js';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import User from "../model/authModel.js";
 
 export async function registerUser(req, res) {
-  try {
-    const { name, email, password, confirmPassword } = req.body;
-    if (!name || !email || !password || !confirmPassword) {
-      return res.status(400).json({ message: "Please fill all the fields" });
-    } else if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
+  try {
+    const { name, email, password, confirmPassword } = req.body;
+    if (!name || !email || !password || !confirmPassword) {
+      return res.status(400).json({ message: "Please fill all the fields" });
+    } else if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
-    }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-    });
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '30d',
-    });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
 
     // --- START OF FIX ---
     const cookieOptions = {
@@ -35,86 +35,91 @@ export async function registerUser(req, res) {
     };
 
     // For production, we must set SameSite=None and Secure=true for cross-domain cookies
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       cookieOptions.secure = true;
-      cookieOptions.sameSite = 'none'; // CHANGE: Was "Lax"
+      cookieOptions.sameSite = "none"; // CHANGE: Was "Lax"
     }
     // --- END OF FIX ---
 
-    res
-      .cookie("token", token, cookieOptions)
-      .status(201) // 201 Created is more appropriate for a successful registration
-      .json({
-        message: "User registered successfully",
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-        },
-      });
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({ message: "Internal server error" });
-  }
+    res
+      .cookie("token", token, cookieOptions)
+      .status(201) // 201 Created is more appropriate for a successful registration
+      .json({
+        message: "User registered successfully",
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+      });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
 
 export async function LoginUser(req, res) {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "User does not exist" });
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '30d',
-    });
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
 
     // --- START OF FIX ---
     const cookieOptions = {
       httpOnly: true,
+      sameSite: process.env.Running === 'development' ? 'strict' : 'none',
+      secure:true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     };
 
     // For production, we must set SameSite=None and Secure=true for cross-domain cookies
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       cookieOptions.secure = true;
-      cookieOptions.sameSite = 'none'; // CHANGE: Was "Lax"
+      cookieOptions.sameSite = "none"; // CHANGE: Was "Lax"
     }
     // --- END OF FIX ---
 
-    res
-      .cookie('token', token, cookieOptions)
-      .status(200)
-      .json({
-        message: "Login successful",
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-        },
-      });
-  } catch (e) {
-    res.status(500).json({ message: "Internal server error" });
-    console.log(e);
-  }
+    res
+      .cookie("token", token, cookieOptions)
+      .status(200)
+      .json({
+        message: "Login successful",
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+      });
+  } catch (e) {
+    res.status(500).json({ message: "Internal server error" });
+    console.log(e);
+  }
 }
 
 export async function logoutUser(req, res) {
-  try {
+  try {
     // Also apply the same options to clear the cookie effectively in production
     const cookieOptions = {
       httpOnly: true,
     };
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       cookieOptions.secure = true;
-      cookieOptions.sameSite = 'none';
+      cookieOptions.sameSite = "none";
     }
-    res.clearCookie("token", cookieOptions).status(200).json({ message: "Logout successful" });
-  } catch (e) {
-    res.status(500).json({ message: "Internal server error during logout" });
-  }
+    res
+      .clearCookie("token", cookieOptions)
+      .status(200)
+      .json({ message: "Logout successful" });
+  } catch (e) {
+    res.status(500).json({ message: "Internal server error during logout" });
+  }
 }
