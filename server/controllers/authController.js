@@ -75,11 +75,11 @@ export async function LoginUser(req, res) {
 
     // --- START OF FIX ---
     const cookieOptions = {
-      httpOnly: true,
-      sameSite: process.env.Running === 'development' ? 'strict' : 'none',
-      secure:true,
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    };
+  httpOnly: true,
+  sameSite: process.env.Running === 'development' ? 'strict' : 'none',
+  secure: process.env.Running === 'development' ? false : true, // <-- This is the fix
+  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+};
 
     // For production, we must set SameSite=None and Secure=true for cross-domain cookies
     if (process.env.NODE_ENV === "production") {
